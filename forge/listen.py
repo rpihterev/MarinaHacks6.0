@@ -1,6 +1,6 @@
 import sys
 import json
-
+from pathlib import Path
 import librosa
 import numpy as np
 
@@ -21,6 +21,8 @@ def listen(song_path):
         raise ValueError("not enough beats found in " + str(song_path))
 
     onsets = {
+        "title": Path(song_path).stem.replace("_", " ").title(),   # songs/back_in_black.mp3 -> "Back In Black"
+    "audio_path": "songs/" + Path(song_path).name,
       "bpm": round(float(np.atleast_1d(tempo)[0]), 1),
       "beats_ms": beat_times.tolist(),
       "onsets": []
@@ -124,4 +126,3 @@ if __name__ == "__main__":
     if "--plot" in sys.argv:
         plot(onsets, envelopes)
         print("wrote onsets.png")
-
