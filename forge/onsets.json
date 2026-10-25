@@ -1,0 +1,18 @@
+{
+  "bpm": 128.0,
+  "beats_ms": [312, 781, 1250, 1718, 2187],
+  "onsets": [
+    {"t": 100,  "band": "low",  "strength": 0.95},
+    {"t": 600,  "band": "high", "strength": 0.40},
+    {"t": 1100,  "band": "mid",  "strength": 0.80},
+    {"t": 1600, "band": "low",  "strength": 0.90},
+    {"t": 2100,  "band": "mid",  "strength": 0.80},
+    {"t": 2600, "band": "low",  "strength": 0.90},
+    {"t": 3100,  "band": "mid",  "strength": 0.80},
+    {"t": 3600, "band": "low",  "strength": 0.70},
+    {"t": 4100,  "band": "mid",  "strength": 0.50},
+    {"t": 4600, "band": "low",  "strength": 0.50},
+    {"t": 5100,  "band": "mid",  "strength": 0.10},
+    {"t": 5600, "band": "low",  "strength": 0.95}
+  ]
+}
