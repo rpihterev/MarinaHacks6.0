@@ -2,11 +2,14 @@
 
 #
 import json
-import time
-from operator import attrgetter
+import sys
+
+#kicks and snares get a small boost so hi-hats don't win every strength tie
+BOOST = {"low": 1.3, "mid": 1.15, "high": 1.0}
 
 #load in json to chart 
-chart = json.load(open("onsets2.json"))
+with open(sys.argv[1] if len(sys.argv) > 1 else "onsets.json") as f:
+    chart = json.load(f)
 #extracts bpm attribute from chart and assigns to bpm
 bpm = chart["bpm"]
 # 60000ms = 1 s => 60000 ms / bpm == ms/beats
@@ -22,8 +25,6 @@ onsets_count = len(onsets_array)
 
 print(beats_ms_count, onsets_count)
 
-next_index = 0
-
 #for each beat, if hit - beat <= 100; add to hitsNearBeat
 #a hit near beat is hit - beat <= 100ms
 
@@ -31,11 +32,17 @@ next_index = 0
 
 #if not empty, itereate through onsets_array["t"]
 
+#also try the half-beats, so there are more notes per second
+grid = []
+for a, b in zip(beats_ms_array, beats_ms_array[1:]):
+    grid += [a, (a + b) // 2]
+grid.append(beats_ms_array[-1])
+
 notesToDisplay = []
 same_lane_count = 0
 prev_lane = 0
 lane_switch = True
-for beat in beats_ms_array:
+for beat in grid:
     hitsNearBeat = []
     for onset in onsets_array:
         if abs(beat - onset["t"]) <= 100:
@@ -45,7 +52,7 @@ for beat in beats_ms_array:
     #have at most one note per beat
     if hitsNearBeat:
         #copy of the max
-        copy_of_max = max(hitsNearBeat, key=lambda x: x["strength"]).copy()
+        copy_of_max = max(hitsNearBeat, key=lambda x: x["strength"] * BOOST[x["band"]]).copy()
         copy_of_max["t"] = beat
         #low (kick) goes to lane 0 or 1. Switch between them each time, so the same key is not pressed over and over.
         #mid (snare) goes to lane 2.
@@ -83,15 +90,7 @@ for beat in beats_ms_array:
         notesToDisplay.append(copy_of_max)
         
 print(notesToDisplay)
-with open("data2.json", "w") as f:
-    json.dump(notesToDisplay, f)
-
-        
-            
-            
-
-
-
-
-
-
+#the game reads chart["notes"], so wrap the notes with the song info
+out = {"title": "Under the River", "audio_path": "songs/under_the_river.mp3", "bpm": bpm, "notes": notesToDisplay}
+with open("charts/under_the_river.json", "w") as f:
+    json.dump(out, f, indent=2)
