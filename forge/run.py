@@ -39,3 +39,4 @@ def main():  # Coordinate the Listener and Chart maker.
 
 if __name__ == "__main__":  # Avoid starting analysis if another script imports this module.
     main()  # Run the complete song-to-chart pipeline.
+
