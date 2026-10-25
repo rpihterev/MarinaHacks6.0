@@ -54,27 +54,32 @@ for beat in beats_ms_array:
         if copy_of_max["band"] == "low":
             if lane_switch:
                 copy_of_max["lane"] = 0
+                same_lane_count = 1
                 lane_switch = not lane_switch
             else:
                 copy_of_max["lane"] = 1
+                same_lane_count = 1
                 lane_switch = not lane_switch
         elif copy_of_max["band"] == "mid":
             copy_of_max["lane"] = 2
         else:
             copy_of_max["lane"] = 3
-    prev_lane = copy_of_max["lane"]        
-    #want to check same_lane_count,         
-    if(prev_lane != 0):
-            prev_lane = copy_of_max["lane"]
-        else:
-            if(prev_lane == copy_of_max["lane"]):
-                same_lane_count += 1
-        if(same_lane_count >= 4){
-            
-        }
-        #REMOVE----------
+    
         copy_of_max.pop("band")
         copy_of_max.pop("strength")
+        
+        if copy_of_max["lane"] == 2 or copy_of_max["lane"] == 3:
+            if prev_lane == copy_of_max["lane"]:
+                same_lane_count += 1
+                if same_lane_count >= 4 and copy_of_max["lane"] == 2:
+                    copy_of_max["lane"] = 3
+                    same_lane_count = 1
+                elif same_lane_count >= 4 and copy_of_max["lane"] == 3:
+                    copy_of_max["lane"] = 2
+                    same_lane_count = 1
+            else:
+                same_lane_count = 1
+        prev_lane = copy_of_max["lane"]
         notesToDisplay.append(copy_of_max)
         
 print(notesToDisplay)
